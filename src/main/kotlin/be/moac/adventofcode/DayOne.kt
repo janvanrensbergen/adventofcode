@@ -1,5 +1,7 @@
 package be.moac.adventofcode
 
+import kotlin.math.floor
+
 typealias Mass = Int
 typealias Fuel = Int
 
@@ -16,7 +18,7 @@ class FuelCalculator: DayOne {
 
 
     private fun Mass.calculateFuel(): Int =
-        with(this.div(3).minus(2)) {
+        with(floor(this.toFloat().div(3)).minus(2).toInt()) {
             when {
                 this <= 0 -> 0
                 else -> this + this.calculateFuel()
