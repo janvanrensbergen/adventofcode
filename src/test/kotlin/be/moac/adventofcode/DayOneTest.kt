@@ -11,8 +11,8 @@ internal class DayOneTest {
     private val dayOne: DayOne = FuelCalculator()
 
     @ParameterizedTest
-    @CsvSource(value = ["12,2", "14,2", "1969,654", "100756,33583"])
-    fun `that fuel is calculated divide by 3 round down and subtract by 2`(mass: Int, expected: Int) {
+    @CsvSource(value = ["12,2", "14,2", "1969,966", "100756,50346" ]) //
+    fun `that fuel is calculated divide by 3 round down and subtract by 2 and for that fuel other fuel is calculated unit zero`(mass: Int, expected: Int) {
 
         //When:
         val result = dayOne.calculateFuel(mass)
@@ -31,7 +31,7 @@ internal class DayOneTest {
         val result = dayOne.calculateFuel(*mass.toIntArray())
 
         //Then:
-        assertThat(result).isEqualTo(3406527)
+        assertThat(result).isEqualTo(5106932)
 
     }
 
