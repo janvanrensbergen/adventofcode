@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import kotlin.system.measureTimeMillis
 
 
 internal class DayOneTest {
@@ -24,17 +25,20 @@ internal class DayOneTest {
     @Test
     fun `that fuel is sum of fuel for each module`() {
 
-        //Given:
-        val mass = input
+        val millis = measureTimeMillis {
+            //Given:
+            val mass = input
 
-        //When:
-        val result = dayOne.calculateFuel(*mass.toIntArray())
+            //When:
+            val result = dayOne.calculateFuel(*mass.toIntArray())
 
-        //Then:
-        assertThat(result).isEqualTo(5106932)
+            //Then:
+            assertThat(result).isEqualTo(5106932)
+        }
+
+        println("Result in $millis")
 
     }
-
 
     private val input = listOf(
         68936,

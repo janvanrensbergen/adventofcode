@@ -12,10 +12,7 @@ interface DayOne {
 class FuelCalculator: DayOne {
 
     override fun calculateFuel(vararg mass: Mass): Fuel =
-        mass.map {
-                it.calculateFuel()
-             }
-            .sum()
+        mass.map {it.calculateFuel()}.sum()
 
 
     private fun Mass.calculateFuel(): Int =
