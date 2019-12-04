@@ -18,7 +18,6 @@ class KeyGenerator: DayFour {
             .filter { it.onlyDecreaseFromLeftToRight() }
             .toList()
     }
-
 }
 
 fun Int.onlyDecreaseFromLeftToRight(): Boolean =
@@ -28,17 +27,9 @@ fun Int.onlyDecreaseFromLeftToRight(): Boolean =
 
 fun Int.containsAdjacentSameDigits(): Boolean =
     toString().toCharArray()
-        .fold(mutableListOf<Pair<Char, Int>>()) { acc, c ->
-            when {
-                acc.isEmpty() -> acc.add(c to 1)
-                else ->
-                    when (acc.last().first) {
-                        c -> acc[acc.size -1] = c to acc.last().second + 1
-                        else -> acc.add(c to 1)
-                }
-            }
-            acc
-        }.any { it.second == 2 }
+        .groupBy { it }
+        .map { (_, value) -> value.size }
+        .any { it == 2 }
 
 
 
