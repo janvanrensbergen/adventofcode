@@ -46,7 +46,7 @@ internal class DayFourTest {
     }
 
     @Test
-    fun `that there must be two adjecent digits the same`() {
+    fun `that there must be two adjacent digits the same`() {
 
         //Given:
         val range = "172851-675869"
@@ -91,29 +91,8 @@ internal class DayFourTest {
         val result = dayFour.findKeys(range)
 
         //Then:
-        assertThat(result).hasSize(1660)
+        assertThat(result).hasSize(1135)
 
     }
 
-    private fun Int.onlyDecreaseFromLeftToRight(): Boolean {
-        val toCharArray = this.toString().toCharArray()
-        for ((index, character) in toCharArray.withIndex()) {
-            if(index > 0 && character < toCharArray[index - 1]) {
-                return false
-            }
-        }
-
-        return true
-    }
-
-    private fun Int.containsAdjacentSameDigits(): Boolean {
-        val toCharArray = this.toString().toCharArray()
-        for ((index, character) in toCharArray.withIndex()) {
-            if(index > 0 && character == toCharArray[index - 1]) {
-                return true
-            }
-        }
-
-        return false
-    }
 }

@@ -19,28 +19,17 @@ class KeyGenerator: DayFour {
             .toList()
     }
 
-    private fun Int.onlyDecreaseFromLeftToRight(): Boolean {
-        val toCharArray = this.toString().toCharArray()
-        for ((index, character) in toCharArray.withIndex()) {
-            if(index > 0 && character < toCharArray[index - 1]) {
-                return false
-            }
-        }
-
-        return true
-    }
-
-    private fun Int.containsAdjacentSameDigits(): Boolean {
-        val toCharArray = this.toString().toCharArray()
-        for ((index, character) in toCharArray.withIndex()) {
-            if(index > 0 && character == toCharArray[index - 1]) {
-                return true
-            }
-        }
-
-        return false
-    }
-
 }
+
+fun Int.onlyDecreaseFromLeftToRight(): Boolean =
+    toString().toCharArray().asSequence()
+        .zipWithNext()
+        .all { it.first <= it.second}
+
+fun Int.containsAdjacentSameDigits(): Boolean =
+    this.toString()
+        .groupBy { it }
+        .mapValues { (k, v) -> v.size }
+        .any { (k, v) -> v == 2 }
 
 
