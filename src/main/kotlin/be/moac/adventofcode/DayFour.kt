@@ -27,9 +27,18 @@ fun Int.onlyDecreaseFromLeftToRight(): Boolean =
         .all { it.first <= it.second}
 
 fun Int.containsAdjacentSameDigits(): Boolean =
-    this.toString()
-        .groupBy { it }
-        .mapValues { (k, v) -> v.size }
-        .any { (k, v) -> v == 2 }
+    toString().toCharArray()
+        .fold(mutableListOf<Pair<Char, Int>>()) { acc, c ->
+            when {
+                acc.isEmpty() -> acc.add(c to 1)
+                else ->
+                    when (acc.last().first) {
+                        c -> acc[acc.size -1] = c to acc.last().second + 1
+                        else -> acc.add(c to 1)
+                }
+            }
+            acc
+        }.any { it.second == 2 }
+
 
 
