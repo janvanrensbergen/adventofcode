@@ -1,5 +1,3 @@
-@file:JvmName("Day04Kt")
-
 package be.moac.adventofcode
 
 import kotlin.math.abs
