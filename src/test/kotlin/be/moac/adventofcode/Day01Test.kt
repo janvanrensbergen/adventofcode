@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource
 import kotlin.system.measureTimeMillis
 
 
-internal class DayOneTest {
+internal class Day01Test {
 
     private val dayOne: DayOne = FuelCalculator()
 

@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.jupiter.api.Test
 
-internal class DayFourTest {
+internal class Day04Test {
 
     private val dayFour = KeyGenerator()
 
