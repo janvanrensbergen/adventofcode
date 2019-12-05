@@ -10,7 +10,7 @@ typealias Outputs = List<String>
 
 interface DayFive {
 
-    fun run(input: String): Outputs
+    fun run(input: String = ""): Outputs
 
 }
 
@@ -23,29 +23,53 @@ class TEST(instructions: String): DayFive {
     override fun run(input: String): Outputs {
         val results = mutableListOf<String>()
 
-        var index = 0
-        while (index < memory.size) {
-            val instructionCode = memory[index++]
+        var instructionPointer = 0
+        while (instructionPointer < memory.size) {
+            val instructionCode = memory[instructionPointer++]
 
             when(instructionCode.takeLast(2).toInt()){
                  1 -> {
-                    val parameterOne = memory.getValue(index++, instructionCode.parameterModeFor(1))
-                    val parameterTwo = memory.getValue(index++, instructionCode.parameterModeFor(2))
+                    val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
+                    val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
 
-                    val storeParameter = memory[index++].toInt()
+                    val storeParameter = memory[instructionPointer++].toInt()
 
                     memory[storeParameter] = (parameterOne + parameterTwo).toString()
                 }
                 2 -> {
-                    val parameterOne = memory.getValue(index++, instructionCode.parameterModeFor(1))
-                    val parameterTwo = memory.getValue(index++, instructionCode.parameterModeFor(2))
+                    val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
+                    val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
 
-                    val storeParameter = memory[index++].toInt()
+                    val storeParameter = memory[instructionPointer++].toInt()
 
                     memory[storeParameter] = (parameterOne * parameterTwo).toString()
                 }
-                3 -> memory[memory[index++].toInt()] = input
-                4 -> results.add(memory[memory[index++].toInt()])
+                3 -> memory[memory[instructionPointer++].toInt()] = input
+                4 -> results.add(memory[memory[instructionPointer++].toInt()])
+                5 -> {
+                    val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
+                    val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
+
+                    instructionPointer = if(parameterOne != 0)  parameterTwo else instructionPointer
+                }
+                6 -> {
+                    val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
+                    val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
+
+                    instructionPointer = if(parameterOne == 0)  parameterTwo else instructionPointer
+                }
+                7 -> {
+                    val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
+                    val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
+
+                    memory[memory[instructionPointer++].toInt()]  = if(parameterOne < parameterTwo)  "1" else "0"
+                }
+                8 -> {
+                    val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
+                    val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
+
+                    memory[memory[instructionPointer++].toInt()]  = if(parameterOne == parameterTwo)  "1" else "0"
+                }
                 99 -> return results
             }
         }

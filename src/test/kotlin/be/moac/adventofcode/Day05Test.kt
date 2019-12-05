@@ -1,6 +1,7 @@
 package be.moac.adventofcode
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -118,6 +119,92 @@ internal class DayFiveTest {
 
     }
 
+
+    @Test
+    fun `that if opcode is 5 and first parameter is non-zero it will set the instruction pointer to second value`() {
+
+        //Expect:
+        assertSoftly { softly ->
+            softly.assertThat(TEST("1005,1,5,4,1,4,0").run()).containsExactly("1005")
+            softly.assertThat(TEST("105,0,0,4,1,4,0").run()).containsExactly("0", "105")
+        }
+
+    }
+
+    @Test
+    fun `that if opcode is 6 and first parameter is zero it will set the instruction pointer to second value`() {
+
+        //Expect:
+        assertSoftly { softly ->
+            softly.assertThat(TEST("1006,6,5,4,1,4,0").run()).containsExactly("1006")
+            softly.assertThat(TEST("106,1,0,4,1,4,0").run()).containsExactly("1", "106")
+        }
+
+    }
+
+    @Test
+    fun `that if opcode is 7 and the first parameter is less than second parameter it stores 1 in postion given by 3 parameter`() {
+
+        //Expect:
+        assertSoftly { softly ->
+            softly.assertThat(TEST("1107,800,900,0,99").also { it.run() }.code).isEqualTo("1,800,900,0,99")
+            softly.assertThat(TEST("1107,900,800,0,99").also { it.run() }.code).isEqualTo("0,900,800,0,99")
+            softly.assertThat(TEST("7,5,6,0,99,800,900").also { it.run() }.code).isEqualTo("1,5,6,0,99,800,900")
+            softly.assertThat(TEST("7,5,6,0,99,900,800").also { it.run() }.code).isEqualTo("0,5,6,0,99,900,800")
+
+        }
+    }
+
+    @Test
+    fun `that if opcode is 8 and the first parameter is equal to second parameter it stores 1 in postion given by 3 parameter`() {
+
+        //Expect:
+        assertSoftly { softly ->
+            softly.assertThat(TEST("1108,800,800,0,99").also { it.run() }.code).isEqualTo("1,800,800,0,99")
+            softly.assertThat(TEST("1108,900,800,0,99").also { it.run() }.code).isEqualTo("0,900,800,0,99")
+            softly.assertThat(TEST("8,5,6,0,99,800,800").also { it.run() }.code).isEqualTo("1,5,6,0,99,800,800")
+            softly.assertThat(TEST("8,5,6,0,99,900,800").also { it.run() }.code).isEqualTo("0,5,6,0,99,900,800")
+
+        }
+    }
+
+    @Test
+    fun `that part two is ok`() {
+
+        //Given:
+        val test = TEST("3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99")
+
+        //Expect:
+        assertSoftly { softly ->
+            softly.assertThat(TEST("3,9,8,9,10,9,4,9,99,-1,8").run("7")).containsExactly("0")
+            softly.assertThat(TEST("3,9,8,9,10,9,4,9,99,-1,8").run("8")).containsExactly("1")
+            softly.assertThat(TEST("3,9,8,9,10,9,4,9,99,-1,8").run("9")).containsExactly("0")
+
+            softly.assertThat(TEST("3,9,7,9,10,9,4,9,99,-1,8").run("3")).containsExactly("1")
+            softly.assertThat(TEST("3,9,7,9,10,9,4,9,99,-1,8").run("8")).containsExactly("0")
+            softly.assertThat(TEST("3,9,7,9,10,9,4,9,99,-1,8").run("9")).containsExactly("0")
+
+            softly.assertThat(TEST("3,3,1108,-1,8,3,4,3,99").run("7")).containsExactly("0")
+            softly.assertThat(TEST("3,3,1108,-1,8,3,4,3,99").run("8")).containsExactly("1")
+            softly.assertThat(TEST("3,3,1108,-1,8,3,4,3,99").run("9")).containsExactly("0")
+
+            softly.assertThat(TEST("3,3,1107,-1,8,3,4,3,99").run("3")).containsExactly("1")
+            softly.assertThat(TEST("3,3,1107,-1,8,3,4,3,99").run("8")).containsExactly("0")
+            softly.assertThat(TEST("3,3,1107,-1,8,3,4,3,99").run("9")).containsExactly("0")
+
+            softly.assertThat(TEST("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9").run("0")).containsExactly("0")
+            softly.assertThat(TEST("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9").run("99")).containsExactly("1")
+            
+            softly.assertThat(TEST("3,3,1105,-1,9,1101,0,0,12,4,12,99,1").run("0")).containsExactly("0")
+            softly.assertThat(TEST("3,3,1105,-1,9,1101,0,0,12,4,12,99,1").run("99")).containsExactly("1")
+
+//            softly.assertThat(test.run("7")).containsExactly("999")
+            softly.assertThat(test.run("8")).containsExactly("1000")
+            softly.assertThat(test.run("9")).containsExactly("1001")
+        }
+
+    }
+
     @Test
     fun `solution part one`() {
 
@@ -126,6 +213,21 @@ internal class DayFiveTest {
 
         //When:
         val result = test.run("1")
+
+        //Then:
+        println(result)
+        println(result.last())
+
+    }
+
+    @Test
+    fun `solution part two`() {
+
+        //Given:
+        val test = TEST(partOne)
+
+        //When:
+        val result = test.run("5")
 
         //Then:
         println(result)
