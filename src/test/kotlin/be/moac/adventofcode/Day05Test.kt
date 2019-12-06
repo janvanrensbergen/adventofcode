@@ -15,7 +15,7 @@ internal class DayFiveTest {
         val input = "1,2,3,4,5,6,7"
 
         //When:
-        val result = input.parse()
+        val result = input.asMemory()
 
         //Then:
         assertThat(result).isEqualTo(arrayOf("1","2","3","4","5","6","7"))

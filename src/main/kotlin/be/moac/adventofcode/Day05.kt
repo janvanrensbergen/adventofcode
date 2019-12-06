@@ -16,7 +16,7 @@ interface DayFive {
 
 class TEST(instructions: String): DayFive {
 
-    val memory = instructions.parse()
+    val memory = instructions.asMemory()
 
     val code: String get() = memory.joinToString(separator = ",")
 
@@ -31,17 +31,13 @@ class TEST(instructions: String): DayFive {
                  1 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
-
                     val storeParameter = memory[instructionPointer++].toInt()
-
                     memory[storeParameter] = (parameterOne + parameterTwo).toString()
                 }
                 2 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
-
                     val storeParameter = memory[instructionPointer++].toInt()
-
                     memory[storeParameter] = (parameterOne * parameterTwo).toString()
                 }
                 3 -> memory[memory[instructionPointer++].toInt()] = input
@@ -49,25 +45,21 @@ class TEST(instructions: String): DayFive {
                 5 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
-
                     instructionPointer = if(parameterOne != 0)  parameterTwo else instructionPointer
                 }
                 6 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
-
                     instructionPointer = if(parameterOne == 0)  parameterTwo else instructionPointer
                 }
                 7 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
-
                     memory[memory[instructionPointer++].toInt()]  = if(parameterOne < parameterTwo)  "1" else "0"
                 }
                 8 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
-
                     memory[memory[instructionPointer++].toInt()]  = if(parameterOne == parameterTwo)  "1" else "0"
                 }
                 99 -> return results
@@ -94,7 +86,7 @@ fun InstructionCode.parameterModeFor(parameterIndex: Int): ParameterMode =
         }
     }
 
-fun Code.parse(): Memory =
+fun Code.asMemory(): Memory =
     this.split(',').toTypedArray()
 
 enum class ParameterMode {
