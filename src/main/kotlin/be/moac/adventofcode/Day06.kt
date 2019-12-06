@@ -1,59 +1,30 @@
 package be.moac.adventofcode
 
 interface DaySix {
-
     fun calculateOrbits(): Int
     fun calculateShortestPath(from: String = "YOU", to: String = "SAN"): Int
-
 }
 
 class OrbitCalculator(input: String): DaySix {
+    private val edges = input.parseEdges()
 
-    private val planets = input.parsePlanets()
-    private val orbiting = input.parseOrbiting()
+    override fun calculateOrbits()= edges.map { (it, _) -> path(it).size -1 }.sum()
+    override fun calculateShortestPath(from: String, to: String)= path(from) shortest path(to)
 
-    override fun calculateOrbits(): Int {
-        fun calculateIndirectOrbits(orbits: List<String>?, sum: Int = 0): Int =
-            when {
-                orbits.isNullOrEmpty() -> sum
-                else -> orbits.size + orbits.map { calculateIndirectOrbits(planets[it]) }.sum()
-            }
+    private tailrec fun path(from: String?, path: MutableList<String> = mutableListOf()): Collection<String> =
+        when (from) {
+            null -> path
+            else -> path(from = edges[from], path = path.apply { add(from) })
+        }
 
-        val direct = planets.map { (_, value) -> value.size }.sum()
-        val indirect = planets.asSequence().map { (_, orbits) -> calculateIndirectOrbits(orbits) }.sum() - direct
+    private infix fun Collection<String>.shortest(other: Collection<String>) =
+        ((this union other) subtract (this intersect other)).size -2
 
-        return direct + indirect
-    }
-
-    override fun calculateShortestPath(from: String, to: String): Int {
-
-        tailrec fun path(from: String?, path: List<String> = emptyList()): List<String> =
-            when (from) {
-                null -> path
-                else -> path(from = orbiting[from], path = path + listOf(from))
-            }
-
-        val fromPath = path(from)
-        val toPath = path(to)
-
-        val intersect = fromPath.intersect(toPath).first()
-
-        return (fromPath.indexOf(intersect) + toPath.indexOf(intersect)) -2
-    }
-
-
-    private fun String.parsePlanets() = this.split(",")
-        .asSequence()
-        .map { it.split(")") }
-        .map{ it.first() to it.last() }
-        .groupBy { it.first }
-        .mapValues { (_, value) -> value.map { it.second }}
-
-    private fun String.parseOrbiting() = this.split(",")
-        .asSequence()
-        .map { it.split(")") }
-        .map{ it.last() to it.first() }
-        .toMap()
+    private fun String.parseEdges() =
+        this.split(",")
+            .asSequence()
+            .map { it.split(")") }
+            .associate{ it.last() to it.first() }
 }
 
 
