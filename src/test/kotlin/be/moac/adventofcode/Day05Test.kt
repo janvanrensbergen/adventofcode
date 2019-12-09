@@ -79,21 +79,16 @@ internal class DayFiveTest {
         assertThat(test.code).isEqualTo(expected)
     }
 
-    @ParameterizedTest
-    @CsvSource(delimiter = ';', value =[
-        "3,0;100;100,0",
-        "3,0,3,1,3,2;100;100,100,100,1,3,2"
-    ])
-    fun `that opcode 03 saves input at position of parameter`(instructions: String, input: String, expected: String) {
+    @Test
+    fun `that opcode 03 saves input at position of parameter`() {
 
-        //Given:
-        val test = TEST(instructions)
 
-        //When:
-        test.run(input)
+        //Expect:
+        assertSoftly { softly ->
+            softly.assertThat(TEST("3,0").also { it.run("100") }.code).isEqualTo("100,0")
+            softly.assertThat(TEST("3,0,3,1,3,2").also { it.run("100", "101", "102") }.code).isEqualTo("100,101,102,1,3,2")
+        }
 
-        //Then:
-        assertThat(test.code).isEqualTo(expected)
     }
 
     @Test

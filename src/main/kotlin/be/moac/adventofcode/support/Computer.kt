@@ -2,6 +2,7 @@ package be.moac.adventofcode.support
 
 import be.moac.adventofcode.support.ParameterMode.Immediate
 import be.moac.adventofcode.support.ParameterMode.Position
+import java.util.*
 
 
 typealias Memory = Array<String>
@@ -11,7 +12,7 @@ typealias Outputs = List<String>
 
 interface Computer {
 
-    fun run(input: String = ""): Outputs
+    fun run(vararg input: String = arrayOf("")): Outputs
 
 }
 
@@ -21,7 +22,9 @@ class IntComputer(instructions: String): Computer {
 
     val code: String get() = memory.joinToString(separator = ",")
 
-    override fun run(input: String): Outputs {
+    override fun run(vararg input: String): Outputs = run(LinkedList<String>().apply {addAll(input)    })
+
+    private fun run(inputs: Deque<String>): Outputs {
         val results = mutableListOf<String>()
 
         var instructionPointer = 0
@@ -41,7 +44,7 @@ class IntComputer(instructions: String): Computer {
                     val storeParameter = memory[instructionPointer++].toInt()
                     memory[storeParameter] = (parameterOne * parameterTwo).toString()
                 }
-                3 -> memory[memory[instructionPointer++].toInt()] = input
+                3 -> memory[memory[instructionPointer++].toInt()] = inputs.pollFirst()
                 4 -> results.add(memory[memory[instructionPointer++].toInt()])
                 5 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))

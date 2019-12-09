@@ -6,7 +6,7 @@ import be.moac.adventofcode.support.Outputs
 
 interface DayFive {
 
-    fun run(input: String = ""): Outputs
+    fun run(vararg input: String = arrayOf("")): Outputs
 
 }
 
@@ -16,7 +16,7 @@ class TEST(instructions: String): DayFive {
 
     val code: String get() = (computer as IntComputer).code
 
-    override fun run(input: String): Outputs = computer.run(input)
+    override fun run(vararg input: String): Outputs = computer.run(*input)
 
 }
 
