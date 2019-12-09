@@ -22,7 +22,7 @@ internal class DayFiveTest {
         val result = input.asMemory()
 
         //Then:
-        assertThat(result).isEqualTo(arrayOf("1","2","3","4","5","6","7"))
+        assertThat(result).isEqualTo(listOf("1","2","3","4","5","6","7"))
 
     }
 
