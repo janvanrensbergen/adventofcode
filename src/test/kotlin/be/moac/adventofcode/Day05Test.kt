@@ -1,5 +1,9 @@
 package be.moac.adventofcode
 
+import be.moac.adventofcode.support.InstructionCode
+import be.moac.adventofcode.support.ParameterMode
+import be.moac.adventofcode.support.asMemory
+import be.moac.adventofcode.support.parameterModeFor
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.jupiter.api.Test
@@ -25,7 +29,7 @@ internal class DayFiveTest {
     @ParameterizedTest
     @CsvSource(value = ["11102,1,Immediate","11102,2,Immediate","01102,3,Position",
         "02,1,Position","02,2,Position","02,3,Position"])
-    fun `that parameter mode for paramter at index is going from right to left after opcode`(instructionCode: InstructionCode, index: Int, expected: ParameterMode ) {
+    fun `that parameter mode for paramter at index is going from right to left after opcode`(instructionCode: InstructionCode, index: Int, expected: ParameterMode) {
 
         //When:
         val result = instructionCode.parameterModeFor(index)
