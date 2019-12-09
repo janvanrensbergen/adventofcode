@@ -2,7 +2,13 @@ package be.moac.adventofcode.support
 
 import be.moac.adventofcode.support.ParameterMode.Immediate
 import be.moac.adventofcode.support.ParameterMode.Position
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 
 typealias Memory = Array<String>
@@ -12,8 +18,9 @@ typealias Outputs = List<String>
 
 interface Computer {
 
-    fun run(vararg input: String = arrayOf("")): Outputs
+    fun run(vararg inputs: String = arrayOf("")): Outputs
 
+    suspend fun runAsync(input: ReceiveChannel<String>, output: SendChannel<String>): Outputs
 }
 
 class IntComputer(instructions: String): Computer {
@@ -22,9 +29,23 @@ class IntComputer(instructions: String): Computer {
 
     val code: String get() = memory.joinToString(separator = ",")
 
-    override fun run(vararg input: String): Outputs = run(LinkedList<String>().apply {addAll(input)    })
+    override fun run(vararg inputs: String): Outputs = runBlocking {
+        val inputChannel = Channel<String>(Channel.UNLIMITED)
+        val outputChannel = Channel<String>(Channel.UNLIMITED)
 
-    private fun run(inputs: Deque<String>): Outputs {
+        launch {
+            for(input in inputs){
+                inputChannel.send(input)
+            }
+        }
+
+        val result = withContext(Dispatchers.Default) { runAsync(inputChannel, outputChannel) }
+        outputChannel.close()
+
+        result
+    }
+
+    override suspend fun runAsync(input: ReceiveChannel<String>, output: SendChannel<String>): Outputs {
         val results = mutableListOf<String>()
 
         var instructionPointer = 0
@@ -44,8 +65,8 @@ class IntComputer(instructions: String): Computer {
                     val storeParameter = memory[instructionPointer++].toInt()
                     memory[storeParameter] = (parameterOne * parameterTwo).toString()
                 }
-                3 -> memory[memory[instructionPointer++].toInt()] = inputs.pollFirst()
-                4 -> results.add(memory[memory[instructionPointer++].toInt()])
+                3 -> memory[memory[instructionPointer++].toInt()] = input.receive()
+                4 -> output.send(memory[memory[instructionPointer++].toInt()].also { results.add(it) })
                 5 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(1))
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.parameterModeFor(2))
