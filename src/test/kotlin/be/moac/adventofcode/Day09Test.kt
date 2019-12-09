@@ -13,6 +13,7 @@ internal class Day09Test  {
             softly.assertThat(DayNine.run("1102,34915192,34915192,7,4,7,99,0").last()).hasSize(16)
             softly.assertThat(DayNine.run("104,1125899906842624,99").last()).isEqualTo("1125899906842624")
             softly.assertThat(DayNine.run(instructions = input, input = "1").last()).isEqualTo("4261108180")
+            softly.assertThat(DayNine.run(instructions = input, input = "2").last()).isEqualTo("77944")
         }
     }
 
