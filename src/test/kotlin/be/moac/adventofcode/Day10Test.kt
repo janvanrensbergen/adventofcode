@@ -4,14 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class Day10Test  {
-
-    @Test
-    fun `calculate the angle`() {
-        assertThat((15 to 8) angle (10 to 7)).isEqualTo(-20)
-        
-    }
-
-
+    
     @Test
     fun `that input can be parsed correctly`() {
         //Given:
@@ -216,10 +209,27 @@ internal class Day10Test  {
         """.trimIndent()
 
         //When:
-        val result = DayTen.calculate(map)
-
-        //Then:
-        assertThat(result).isEqualTo( 30 to 34)
+        assertThat(DayTen.calculate(map)).isEqualTo( 30 to 34)
+        assertThat(DayTen.shoot(map)).isEqualTo(2732)
 
     }
+
+
+    @Test
+    fun something() {
+        println("[5,5] -> [5,0]   ${((5 to 5) angle (5 to 0))}  -  ${ Math.toDegrees((5 to 5) angle (5 to 0))}")
+        println("[5,5] -> [7,2]   ${((5 to 5) angle (7 to 0))}  -  ${ Math.toDegrees((5 to 5) angle (7 to 0))}")
+        println("[5,5] -> [10,5]  ${((5 to 5) angle (10 to 5))} -  ${ Math.toDegrees((5 to 5) angle (10 to 5))}")
+        println("[5,5] -> [5,10]  ${((5 to 5) angle (5 to 10))} -  ${ Math.toDegrees((5 to 5) angle (5 to 10))}")
+        println("[5,5] -> [0,5]   ${((5 to 5) angle (0 to 5))}  -  ${ Math.toDegrees((5 to 5) angle (0 to 5))}")
+
+        println("==========================")
+
+        println("[0,0] -> [0,5]   ${((0 to 0) angle (0 to 5))}  -  ${Math.toDegrees((0 to 0) angle (0 to 5))}")
+        println("[0,0] -> [5,0]   ${((0 to 0) angle (5 to 0))} -  ${Math.toDegrees((0 to 0) angle (5 to 0))}")
+        println("[0,0] -> [0,-5]  ${((0 to 0) angle (0 to -5))} -  ${Math.toDegrees((0 to 0) angle (0 to -5))}")
+        println("[0,0] -> [-5,0]  ${((0 to 0) angle (-5 to 0))}  -  ${Math.toDegrees((0 to 0) angle (-5 to 0))}")
+    }
 }
+
+
