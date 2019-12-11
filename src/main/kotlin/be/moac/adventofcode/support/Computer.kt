@@ -74,8 +74,13 @@ class IntComputer(instructions: String): Computer {
 
                     memory[memory.index(instructionPointer++, instructionCode.third)] = (parameterOne * parameterTwo).toString()
                 }
-                3 -> memory[ memory.index(instructionPointer++, instructionCode.first)] = input.receive()
-                4 -> output.send(memory.getValue(instructionPointer++, instructionCode.first).toString().also { results.add(it) })
+                3 -> memory[ memory.index(instructionPointer++, instructionCode.first)] = input.receive().also {
+//                    println("Computer received: $it")
+                }
+                4 -> output.send(memory.getValue(instructionPointer++, instructionCode.first).toString().also {
+//                    println("Computer sends: $it")
+                    results.add(it)
+                })
                 5 -> {
                     val parameterOne = memory.getValue(instructionPointer++, instructionCode.first)
                     val parameterTwo = memory.getValue(instructionPointer++, instructionCode.second)
@@ -99,7 +104,10 @@ class IntComputer(instructions: String): Computer {
                 9 -> {
                     base += memory.getValue(instructionPointer++, instructionCode.first).toInt()
                 }
-                99 -> return results
+                99 -> {
+                    output.close()
+                    return results
+                }
             }
         }
 
