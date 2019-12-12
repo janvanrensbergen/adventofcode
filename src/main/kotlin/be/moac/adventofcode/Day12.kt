@@ -5,7 +5,44 @@ import kotlin.math.abs
 
 class DayTwelve {
 
-    fun solution(input: String, steps: Int = 100): Int =
+    fun solutionPartTwo(input: String): Long =
+        with(Moon.of(input)) {
+            fun Pair<Int, Int>.move(): Pair<Int, Int> = this.first + this.second to this.second
+
+            infix fun Pair<Int, Int>.move(others: List<Pair<Int,Int>>): Pair<Int,Int> =
+                others.filterNot { it == this }
+                    .fold(this) { result, otherMoon ->
+                        result.first to result.second + (result.first comparePosition otherMoon.first) }
+                    .move()
+
+            tailrec fun run(moons: List<Pair<Int, Int>>, initialState: List<Pair<Int, Int>>, iterations: Long=0L): Long =
+                when (moons.hashCode()) {
+                    initialState.hashCode() -> iterations
+                    else -> run(moons.map { moon -> moon move moons }, initialState, iterations + 1)
+                }
+
+            val x = this.map { it.xPair }
+            val y = this.map { it.yPair }
+            val z = this.map { it.zPair }
+
+            val xSteps = run(x.map { moon -> moon move x }, x, 1L)
+            val ySteps = run(y.map { moon -> moon move y }, y, 1L)
+            val zSteps = run(z.map { moon -> moon move z }, z, 1L)
+
+            return (xSteps lcm ySteps) lcm zSteps
+        }
+
+    private infix fun Long.lcm(other: Long): Long {
+        var a = this
+        var b = other
+        while (a != 0L) {
+            a = (b % a).also { b = a }
+        }
+        return this / b * other
+    }
+
+
+    fun solutionPartOne(input: String, steps: Int = 100): Int =
         run(Moon.of(input), steps).energy
 
     fun run(moons: List<Moon>, times: Int) =
@@ -21,6 +58,11 @@ class DayTwelve {
     data class Moon(val position: Position, val velocity: Velocity) {
         val energy: Int get() = position.energy * velocity.energy
 
+        val xPair get() = position.x to velocity.x
+        val yPair get() = position.y to velocity.y
+        val zPair get() = position.z to velocity.z
+
+
         infix fun move(others: List<Moon>): Moon =
             others.filterNot { it == this }
                 .fold(this) { result, otherMoon -> result gravity otherMoon }
@@ -32,19 +74,12 @@ class DayTwelve {
         infix fun gravity(other: Moon): Moon =
             this.copy(
                 velocity = Velocity(
-                    x = velocity.x + (position.x compare other.position.x),
-                    y = velocity.y + (position.y compare other.position.y),
-                    z = velocity.z + (position.z compare other.position.z)
+                    x = velocity.x + (position.x comparePosition other.position.x),
+                    y = velocity.y + (position.y comparePosition other.position.y),
+                    z = velocity.z + (position.z comparePosition other.position.z)
                 )
             )
 
-        private infix fun Int.compare(other: Int): Int =
-            when {
-                this < other -> 1
-                this > other -> -1
-                this == other -> 0
-                else -> this
-            }
 
         companion object {
             fun of(input: String): List<Moon> =
@@ -82,6 +117,14 @@ class DayTwelve {
 }
 
 val List<DayTwelve.Moon>.energy get() = this.sumBy{ it.energy }
+
+private infix fun Int.comparePosition(other: Int): Int =
+    when {
+        this < other -> 1
+        this > other -> -1
+        this == other -> 0
+        else -> this
+    }
 
 
 

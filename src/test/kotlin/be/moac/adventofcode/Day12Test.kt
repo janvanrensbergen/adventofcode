@@ -2,6 +2,7 @@ package be.moac.adventofcode
 
 import be.moac.adventofcode.DayTwelve.*
 import be.moac.adventofcode.DayTwelve.Position
+import be.moac.adventofcode.support.time
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -161,11 +162,12 @@ internal class Day12Test {
         """.trimIndent()
 
         //When:
-        val result = DayTwelve().solution(input)
+        val result = DayTwelve().solutionPartOne(input)
 
         //Then:
         assertThat(result).isEqualTo(1940)
     }
+
     @Test
     fun `part one`() {
         //Given:
@@ -177,9 +179,61 @@ internal class Day12Test {
         """.trimIndent()
 
         //When:
-        val result = DayTwelve().solution(input = input, steps = 1000)
+        val result = DayTwelve().solutionPartOne(input = input, steps = 1000)
 
         //Then:
         assertThat(result).isEqualTo(8044)
+    }
+
+    @Test
+    fun `part two`() {
+        //Given:
+        val input = """
+            <x=-13, y=-13, z=-13>
+            <x=5, y=-8, z=3>
+            <x=-6, y=-10, z=-3>
+            <x=0, y=5, z=-5>
+        """.trimIndent()
+
+        //When:
+        val result = time("Dday 12 part 2") {DayTwelve().solutionPartTwo(input = input) }
+
+        //Then:
+        assertThat(result).isEqualTo(362375881472136L)
+    }
+
+    @Test
+    fun `calculate number of steps when the universe repeats itself`() {
+        //Given:
+        val input = """
+            <x=-1, y=0, z=2>
+            <x=2, y=-10, z=-7>
+            <x=4, y=-8, z=8>
+            <x=3, y=5, z=-1>
+        """.trimIndent()
+
+        //When:
+        val result = time { DayTwelve().solutionPartTwo(input = input)}
+
+
+        //Then:
+        assertThat(result).isEqualTo(2772)
+    }
+
+    @Test
+    fun `calculate number of steps when the universe repeats itself - other one`() {
+        //Given:
+        val input = """
+            <x=-8, y=-10, z=0>
+            <x=5, y=5, z=10>
+            <x=2, y=-7, z=3>
+            <x=9, y=-8, z=-3>
+        """.trimIndent()
+
+        //When:
+        val result = DayTwelve().solutionPartTwo(input = input)
+
+        //Then:
+        assertThat(result).isEqualTo(4686774924L)
     }
 }

@@ -1,8 +1,9 @@
 package be.moac.adventofcode.support
 
-import kotlin.system.measureTimeMillis
+fun <T> time(name: String = "", block: () -> T): T {
+    val start = System.currentTimeMillis()
+    val result = block()
+    println("$name took ${System.currentTimeMillis() - start} millis")
+    return result
+}
 
-fun time(name: String = "", block: () -> Unit) =
-    measureTimeMillis(block).also {
-        println("$name took $it millis")
-    }
